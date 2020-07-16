@@ -6,7 +6,7 @@ import classNames from 'classnames';
 
 import './sidebar.less';
 import { queryRoutes } from './service';
-import { iconConfig, IconKey } from '@/utils/routes';
+import { iconConfig, IconKey } from '@/utils/icon';
 
 const { SubMenu } = Menu;
 

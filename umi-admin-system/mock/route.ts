@@ -7,7 +7,7 @@ const routes = [
   {
     path: '/icon',
     title: 'Icon',
-    icon: 'icon',
+    icon: 'smile',
     children: [
       {
         path: '/icon/fontawesome',
