@@ -12,3 +12,9 @@ export async function fakeAccountLogin(params: LoginParamsType) {
     data: params,
   });
 }
+
+export async function queryCaptcha() {
+  return request('/api/captcha', {
+    method: 'GET',
+  });
+}

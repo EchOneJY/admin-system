@@ -1,52 +1,27 @@
-import React from 'react';
+import React, { FC } from 'react';
 import { Row, Col, Card } from 'antd';
+import { connect } from 'umi';
 
 import NumberCard from './components/numberCrad';
 import Pages from './components/pages';
-import { IconKey } from '@/utils/icon';
-import Color from '@/utils/themes';
 
-interface NumberType {
-  icon: IconKey;
-  color: string;
-  title: string;
-  number: number;
+import { AnalysisData } from './data';
+
+interface DashboardProps {
+  dashboard: AnalysisData;
+  loading: boolean;
 }
 
-const numbers: NumberType[] = [
-  {
-    icon: 'fire',
-    color: Color.green,
-    title: 'Online Review',
-    number: 1520,
-  },
-  {
-    icon: 'team',
-    color: Color.blue,
-    title: 'New Customers',
-    number: 3011,
-  },
-  {
-    icon: 'message',
-    color: Color.purple,
-    title: 'Active Projects',
-    number: 105,
-  },
-  {
-    icon: 'star',
-    color: Color.red,
-    title: 'Referrals',
-    number: 2020,
-  },
-];
+const Dashboard: FC<DashboardProps> = props => {
+  const { dashboard, loading } = props;
+  const { numbers, pages } = dashboard;
 
-const numberCards = numbers.map((item, key) => (
-  <Col key={key} lg={6} md={12}>
-    <NumberCard {...item} />
-  </Col>
-));
+  const numberCards = numbers.map((item, key) => (
+    <Col key={key} lg={6} md={12}>
+      <NumberCard {...item} />
+    </Col>
+  ));
 
-const Dashboard = () => {
   return (
     <div className="dashboard">
       <Row gutter={24}>
@@ -58,7 +33,7 @@ const Dashboard = () => {
               padding: '24px 36px 24px 0',
             }}
           >
-            <Pages />
+            <Pages data={pages} />
           </Card>
         </Col>
       </Row>
@@ -66,4 +41,12 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default connect(
+  ({
+    dashboard,
+    loading,
+  }: {
+    dashboard: AnalysisData;
+    loading: { models: { [key: string]: boolean } };
+  }) => ({ dashboard, loading: loading.models.dashboard }),
+)(Dashboard);

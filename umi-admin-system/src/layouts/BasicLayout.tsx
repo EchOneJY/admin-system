@@ -3,11 +3,12 @@ import classNames from 'classnames';
 
 import Header from './components/header';
 import Sidebar from './components/sidebar';
-
+import { Route } from '@/typing';
 import './BasicLayout.less';
 
 interface BasicProps {
   children: ReactChildren;
+  route: Route;
 }
 
 const BasicLayout: FC<BasicProps> = props => {
@@ -20,7 +21,11 @@ const BasicLayout: FC<BasicProps> = props => {
   return (
     <div className={classNames('s1-basic-layout', { collapsed })}>
       <div style={sidebarStyle}></div>
-      <Sidebar collapsed={collapsed} sidebarStyle={sidebarStyle} />
+      <Sidebar
+        collapsed={collapsed}
+        sidebarStyle={sidebarStyle}
+        route={props.route}
+      />
       <div className="s1-layout">
         <Header collapsed={collapsed} toggleCollapsed={toggleCollapsed} />
         <main className="s1-main">{props.children}</main>

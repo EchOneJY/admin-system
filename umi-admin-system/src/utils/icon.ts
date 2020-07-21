@@ -7,6 +7,7 @@ import {
   FireOutlined,
   MessageOutlined,
   StarOutlined,
+  BarChartOutlined,
 } from '@ant-design/icons';
 
 export type IconKey =
@@ -17,7 +18,8 @@ export type IconKey =
   | 'team'
   | 'fire'
   | 'message'
-  | 'star';
+  | 'star'
+  | 'chart';
 
 export const iconConfig = {
   dashboard: DashboardOutlined,
@@ -28,4 +30,5 @@ export const iconConfig = {
   fire: FireOutlined,
   message: MessageOutlined,
   star: StarOutlined,
+  chart: BarChartOutlined,
 };

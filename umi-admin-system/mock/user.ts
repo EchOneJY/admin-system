@@ -1,5 +1,7 @@
 import { Request, Response } from 'express';
 import svgCaptcha from 'svg-captcha';
+import { Constant } from './_utils';
+const { ApiPrefix } = Constant;
 
 let captchaText = '';
 
@@ -53,6 +55,6 @@ function login(req: Request, res: Response) {
 }
 
 export default {
-  'GET /api/captcha': getCaptacha,
-  'POST /api/login': login,
+  [`GET ${ApiPrefix}/captcha`]: getCaptacha,
+  [`POST ${ApiPrefix}/login`]: login,
 };

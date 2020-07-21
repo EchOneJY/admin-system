@@ -1,62 +1,35 @@
 import React, { FC, useState } from 'react';
-import { history } from 'umi';
-import { Card, Form, Input, Button, notification, message } from 'antd';
+import { Dispatch, connect } from 'umi';
+import { Card, Form, Input, Button } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
-// import md5 from 'md5';
 
-import './login.less';
-import { LoginParamsType, fakeAccountLogin } from './service';
-// import { setToken } from '@/utils/auth'
+import './style.less';
+import { StateType } from './model';
 
-interface LoginProps {}
+interface LoginProps {
+  userAndlogin: StateType;
+  submitting: boolean;
+  dispatch: Dispatch;
+}
 
 const Login: FC<LoginProps> = props => {
-  console.log(props);
+  const { userAndlogin, submitting, dispatch } = props;
+
   const [formLogin] = Form.useForm();
   const [captcha, setCaptcha] = useState('/api/captcha');
 
   const onFinish = (values: any) => {
-    const data = { ...values };
-    fakeAccountLogin(data)
-      .then(res => {
-        if (res.status === 'ok') {
-          notification.success({
-            message: '登陆成功',
-            duration: 2,
-          });
-          setTimeout(() => {
-            // let redirect = '/'
-            // if (props.location.search) {
-            //   redirect = props.location.search.split('=')[1]
-            // }
-            // console.log(redirect)
-            history.push('/');
-          }, 700);
-        } else {
-          message.warning(res.message);
-          if (res.message === '验证码错误') {
-            setTimeout(() => {
-              formLogin.setFieldsValue({
-                captcha: '',
-              });
-              setCaptcha('/api/captcha?_t=' + new Date().getTime());
-            }, 500);
-          }
-          if (res.message === '帐号密码错误') {
-            setTimeout(() => {
-              formLogin.setFieldsValue({
-                password: '',
-                captcha: '',
-              });
-              setCaptcha('/api/captcha?_t=' + new Date().getTime());
-            }, 500);
-          }
-        }
-      })
-      .catch(error => {
-        console.log(error);
-        setCaptcha('/api/captcha?_t=' + new Date().getTime());
-      });
+    const { status } = userAndlogin;
+    dispatch({
+      type: 'userAndlogin/login',
+      payload: {
+        ...values,
+      },
+    });
+    if (status !== 'ok') {
+      formLogin.setFieldsValue({ captcha: '' });
+      setCaptcha('/api/captcha?_t=' + new Date().getTime());
+    }
   };
 
   return (
@@ -102,7 +75,12 @@ const Login: FC<LoginProps> = props => {
               />
             </Form.Item>
             <Form.Item>
-              <Button className="login-btn" type="primary" htmlType="submit">
+              <Button
+                className="login-btn"
+                type="primary"
+                htmlType="submit"
+                loading={submitting}
+              >
                 登录
               </Button>
             </Form.Item>
@@ -113,4 +91,14 @@ const Login: FC<LoginProps> = props => {
   );
 };
 
-export default Login;
+export default connect(
+  ({
+    userAndlogin,
+    loading,
+  }: {
+    userAndlogin: StateType;
+    loading: {
+      effects: { [key: string]: boolean };
+    };
+  }) => ({ userAndlogin, submitting: loading.effects['userAndlogin/login'] }),
+)(Login);

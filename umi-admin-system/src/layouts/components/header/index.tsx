@@ -4,7 +4,7 @@ import { Menu, Dropdown, Avatar } from 'antd';
 import { LogoutOutlined } from '@ant-design/icons';
 import { MenuUnfoldOutlined, MenuFoldOutlined } from '@ant-design/icons';
 
-import './header.less';
+import './style.less';
 
 export interface HeaderProps {
   collapsed: boolean;
