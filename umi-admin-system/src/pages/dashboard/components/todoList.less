@@ -1,0 +1,37 @@
+.cardWrapper {
+  .ant-card-body,
+  .ant-card-head {
+    padding: 0;
+  }
+  .delete-btn {
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    visibility: hidden;
+    &:hover {
+      color: #cc9a9a;
+    }
+  }
+  .ant-list-item {
+    &:hover {
+      .delete-btn {
+        visibility: visible;
+      }
+    }
+  }
+  .ant-row {
+    width: 100%;
+  }
+  .check-btn {
+    text-align: center;
+    cursor: pointer;
+  }
+
+  .footer-box {
+    text-align: center;
+    .left-text {
+      color: #777;
+      font-weight: 600;
+    }
+  }
+}

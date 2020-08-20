@@ -1,60 +1,58 @@
 import { Request, Response } from 'express';
-import svgCaptcha from 'svg-captcha';
-import { Constant } from './_utils';
+import { Constant, randomAvatar } from './_utils';
+import Mock from 'mockjs';
 const { ApiPrefix } = Constant;
 
-let captchaText = '';
-
-function generateCaptcha() {
-  const captcha = svgCaptcha.create({
-    size: 4,
-    fontSize: 50,
-    width: 100,
-    height: 36,
-    noise: 2,
-  });
-  return captcha;
+interface UsersType {
+  pageSize: number;
+  page: number;
+  address: string[];
+  createTime: [number, number];
 }
 
-function getCaptacha(req: Request, res: Response) {
-  const captcha = generateCaptcha();
-  captchaText = captcha.text;
-  res.type('svg');
-  return res.send(captcha.data);
+interface UserType {
+  id: number;
+  name: string;
+  nickName: string;
+  phone: number;
+  age: number;
+  address: [string, string];
+  isMale: boolean;
+  email: string;
+  createTime: number;
+  avatar: string;
 }
 
-function login(req: Request, res: Response) {
-  const { username, password, captcha } = req.body;
-  if (captcha.toUpperCase() !== captchaText.toUpperCase()) {
-    res.send({
-      status: 'error',
-      message: '验证码错误',
-    });
-    return;
-  }
-  if (password === 'admin' && username === 'admin') {
-    res.send({
-      status: 'ok',
-      currentAuthority: 'admin',
-    });
-    return;
-  }
-  if (password === 'user' && username === 'user') {
-    res.send({
-      status: 'ok',
-      currentAuthority: 'user',
-    });
-    return;
-  }
+const usersListData = Mock.mock({
+  'data|80-100': [
+    {
+      id: '@id',
+      name: '@name',
+      nickName: '@last',
+      phone: /^1[34578]\d{9}$/,
+      'age|11-99': 1,
+      address: '@county(true)',
+      isMale: '@boolean',
+      email: '@email',
+      createTime: '@datetime',
+      avatar() {
+        return randomAvatar();
+      },
+    },
+  ],
+});
 
-  res.send({
-    status: 'error',
-    currentAuthority: 'guest',
-    message: '帐号密码错误',
-  });
-}
+let database = usersListData.data;
 
 export default {
-  [`GET ${ApiPrefix}/captcha`]: getCaptacha,
-  [`POST ${ApiPrefix}/login`]: login,
+  [`POST ${ApiPrefix}/users`](req: Request, res: Response) {
+    let { pageSize = 10, current = 1 } = req.body;
+    res.status(200).json({
+      data: database.slice(
+        ((current as number) - 1) * (pageSize as number),
+        (current as number) * (pageSize as number),
+      ),
+      total: database.length,
+    });
+  },
 };

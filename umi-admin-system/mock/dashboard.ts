@@ -1,8 +1,16 @@
-import { Constant } from './_utils';
-import Mock from 'mockjs';
 import { Request, Response } from 'express';
+import Mock from 'mockjs';
+import { Constant } from './_utils';
 
 const { ApiPrefix, Color } = Constant;
+
+const todoList = [
+  'Racing car sprays burning fuel into crowd.',
+  'Japanese princess to wed commoner.',
+  'Australian walks 100km after outback crash.',
+  'Man charged over missing wedding girl.',
+  'Los Angeles battles huge wildfires.',
+];
 
 const Dashboard = Mock.mock({
   'pages|7': [
@@ -37,6 +45,13 @@ const Dashboard = Mock.mock({
       color: Color.red,
       title: 'Referrals',
       number: 2020,
+    },
+  ],
+  'todoList|5': [
+    {
+      'id|+1': 0,
+      'content|+1': todoList,
+      checked: false,
     },
   ],
 });

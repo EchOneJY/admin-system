@@ -20,7 +20,7 @@ export default defineConfig({
             },
             {
               path: '/user/login',
-              component: '@/pages/user/login',
+              component: '@/pages/login',
             },
           ],
         },
@@ -82,6 +82,18 @@ export default defineConfig({
                   path: '/chart/echart',
                   name: 'Echart',
                   component: '@/pages/chart/echart',
+                },
+              ],
+            },
+            {
+              path: '/users',
+              name: 'User',
+              icon: 'user',
+              routes: [
+                {
+                  path: '/users/list',
+                  name: 'List',
+                  component: '@/pages/user/list',
                 },
               ],
             },

@@ -15,7 +15,14 @@ export interface NumberType {
   number: number;
 }
 
+export interface TodoListType {
+  id: number;
+  content: string;
+  completed: boolean;
+}
+
 export interface AnalysisData {
   pages: PageType[];
   numbers: NumberType[];
+  todoList: TodoListType[];
 }

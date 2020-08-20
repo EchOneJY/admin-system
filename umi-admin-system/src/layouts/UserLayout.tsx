@@ -1,7 +1,7 @@
 import React, { FC, ReactChildren } from 'react';
 
 import Particles from 'react-particles-js';
-import { ParticleConfig } from '@/pages/user/particle';
+import { ParticleConfig } from '@/utils/particle';
 
 import './UserLayout.less';
 

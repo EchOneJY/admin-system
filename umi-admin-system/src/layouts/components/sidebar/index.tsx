@@ -22,32 +22,31 @@ type MenuKeyType = string[];
 const Sidebar: FC<SidebarType> = props => {
   const { route } = props;
 
-  const [currentKey, setCurrentKey] = useState<MenuKeyType>([]);
+  const [currentKey, setCurrentKey] = useState<MenuKeyType>(['/dashboard']);
   const [openKeys, setOpenkeys] = useState<MenuKeyType>([]);
 
   useEffect(() => {
     setCurrentKey([props.location.pathname]);
-  }, []);
+  }, [props.location.pathname]);
 
   useEffect(() => {
-    const key = getOpenKeys(route);
-    console.log(key);
+    const key = getOpenKeys(route, props.location.pathname);
     setOpenkeys([key]);
   }, []);
 
-  console.log(props);
+  // console.log(props);
 
-  const getOpenKeys = (route: Route) => {
+  const getOpenKeys = (route: Route, path: string) => {
     const routes = route.routes;
     let key = '';
     if (routes) {
       for (const item of routes) {
-        if (item.path === props.location.pathname) {
+        if (item.path === path) {
           key = route.path || '';
           break;
         }
         if (item.routes && !key) {
-          key = getOpenKeys(item);
+          key = getOpenKeys(item, path);
         }
       }
     }
@@ -64,6 +63,8 @@ const Sidebar: FC<SidebarType> = props => {
 
   const handleClick = (e: any) => {
     setCurrentKey(e.key);
+    const key = getOpenKeys(route, e.key);
+    setOpenkeys([key]);
   };
 
   const onOpenChange = (openkeys: any) => {
