@@ -5,6 +5,14 @@ export default defineConfig({
   nodeModulesTransform: {
     type: 'none',
   },
+  locale: {
+    default: 'zh-CN',
+    antd: true,
+    title: true,
+    baseNavigator: true,
+    baseSeparator: '-',
+  },
+  title: 'site.title',
   routes: [
     {
       path: '/',
@@ -69,8 +77,8 @@ export default defineConfig({
               ],
             },
             {
-              path: '/cahrt',
-              name: 'Cahrt',
+              path: '/chart',
+              name: 'Chart',
               icon: 'chart',
               routes: [
                 {

@@ -28,6 +28,8 @@
     "@umijs/preset-react": "1.x",
     "@umijs/test": "^3.2.9",
     "classnames": "^2.2.6",
+    "echarts": "^4.9.0",
+    "echarts-for-react": "^2.0.16",
     "lint-staged": "^10.0.7",
     "md5": "^2.2.1",
     "mockjs": "^1.1.0",
@@ -44,6 +46,7 @@
   },
   "devDependencies": {
     "@types/classnames": "^2.2.10",
+    "@types/echarts": "^4.6.5",
     "@types/md5": "^2.2.0",
     "@types/mockjs": "^1.0.2",
     "@types/recharts": "^1.8.14"

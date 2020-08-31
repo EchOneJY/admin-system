@@ -1,12 +1,34 @@
-import React, { FC, useState, useEffect } from 'react';
-import { connect, Dispatch, Link, history, Location } from 'umi';
-import { Table, Avatar, Dropdown, Button, Menu } from 'antd';
+import React, { FC } from 'react';
+import {
+  connect,
+  Dispatch,
+  Link,
+  Location,
+  FormattedMessage,
+  useIntl,
+} from 'umi';
+import {
+  Table,
+  Avatar,
+  Dropdown,
+  Button,
+  Menu,
+  Row,
+  Col,
+  Form,
+  Input,
+  DatePicker,
+  Cascader,
+} from 'antd';
 import { ColumnsType, TablePaginationConfig } from 'antd/es/table';
 import { BarsOutlined, DownOutlined } from '@ant-design/icons';
-import { stringify } from 'qs';
 
 import { StateType } from './model';
 import { UserType } from './data';
+import './style.less';
+import city from '@/utils/city';
+const { Search } = Input;
+const { RangePicker } = DatePicker;
 
 type QueryType = {
   [key: string]: string;
@@ -28,6 +50,19 @@ interface DropOptionProps {
   // dropdownProps: any;
 }
 
+const ColProps = {
+  xs: 24,
+  sm: 12,
+  style: {
+    marginBottom: 16,
+  },
+};
+
+const TwoColProps = {
+  ...ColProps,
+  xl: 96,
+};
+
 const DropOption: FC<DropOptionProps> = props => {
   const { menuOptions } = props;
   const menu = menuOptions.map(item => (
@@ -45,49 +80,27 @@ const DropOption: FC<DropOptionProps> = props => {
 
 const UserList: FC<UserListProps> = props => {
   const { user, dispatch, loading } = props;
-
-  const [pagination, setPagination] = useState<TablePaginationConfig>({
-    showSizeChanger: true,
-    showQuickJumper: true,
-    current: 1,
-    total: 0,
-    pageSize: 10,
-  });
-
-  useEffect(() => {
-    console.log('effect');
-    dispatch({
-      type: 'user/query',
-      payload: pagination,
-    });
-  }, [pagination.current]);
-
-  useEffect(() => {
-    const total = user.total;
-    setPagination({ ...pagination, total });
-  }, [user.total]);
+  const intl = useIntl();
 
   const columns: ColumnsType<UserType> = [
     {
-      title: 'Avatar',
+      title: <FormattedMessage id="user.avatar" />,
       dataIndex: 'avatar',
       key: 'avatar',
-      width: 100,
+      width: 80,
       fixed: 'left',
       render: (text: string) => <Avatar style={{ marginLeft: 8 }} src={text} />,
     },
     {
-      title: 'Name',
+      title: <FormattedMessage id="user.name" />,
       dataIndex: 'name',
       key: 'name',
-      fixed: 'left',
-      width: 100,
       render: (text: string, record) => (
         <Link to={`user/${record.id}`}>{text}</Link>
       ),
     },
     {
-      title: 'NickName',
+      title: <FormattedMessage id="user.nickName" />,
       dataIndex: 'nickName',
       key: 'nickName',
     },
@@ -97,33 +110,36 @@ const UserList: FC<UserListProps> = props => {
       key: 'age',
     },
     {
-      title: 'Gender',
+      title: <FormattedMessage id="user.gender" />,
       dataIndex: 'isMale',
       key: 'isMale',
       render: (text: string) => <span>{text ? 'Male' : 'Female'}</span>,
     },
     {
-      title: 'Phone',
+      title: <FormattedMessage id="user.phone" />,
       dataIndex: 'phone',
       key: 'phone',
     },
     {
-      title: 'Email',
+      title: <FormattedMessage id="user.email" />,
       dataIndex: 'email',
       key: 'email',
+      width: 180,
     },
     {
-      title: 'Address',
+      title: <FormattedMessage id="user.address" />,
       dataIndex: 'address',
       key: 'address',
+      width: 180,
     },
     {
-      title: 'CreateTime',
+      title: <FormattedMessage id="user.createTime" />,
       dataIndex: 'createTime',
       key: 'createTime',
+      width: 160,
     },
     {
-      title: 'Operation',
+      title: <FormattedMessage id="user.operation" />,
       key: 'operation',
       fixed: 'right',
       width: 100,
@@ -131,8 +147,8 @@ const UserList: FC<UserListProps> = props => {
         return (
           <DropOption
             menuOptions={[
-              { key: '1', name: 'Update' },
-              { key: '2', name: 'Delete' },
+              { key: '1', name: intl.formatMessage({ id: 'user.update' }) },
+              { key: '2', name: intl.formatMessage({ id: 'user.delete' }) },
             ]}
           />
         );
@@ -141,19 +157,87 @@ const UserList: FC<UserListProps> = props => {
   ];
 
   const handleChange = (pagination: TablePaginationConfig) => {
-    setPagination(pagination);
+    dispatch({
+      type: 'user/query',
+      payload: pagination,
+    });
   };
 
   return (
     <div className="user-list">
+      <Form>
+        <Row gutter={24}>
+          <Col {...ColProps} xl={{ span: 4 }} md={{ span: 8 }}>
+            <Form.Item name="name">
+              <Search
+                placeholder={intl.formatMessage({ id: 'user.search.name' })}
+              />
+            </Form.Item>
+          </Col>
+          <Col
+            {...ColProps}
+            xl={{ span: 4 }}
+            md={{ span: 8 }}
+            id="addressCascader"
+          >
+            <Form.Item name="address">
+              <Cascader
+                style={{ width: '100%' }}
+                options={city}
+                placeholder={intl.formatMessage({ id: 'user.pick.address' })}
+              />
+            </Form.Item>
+          </Col>
+          <Col
+            {...ColProps}
+            xl={{ span: 6 }}
+            md={{ span: 8 }}
+            sm={{ span: 12 }}
+            id="createTimeRangePicker"
+          >
+            <Form.Item
+              name="createTime"
+              label={<FormattedMessage id="user.createTime" />}
+            >
+              <RangePicker style={{ width: '100%' }} />
+            </Form.Item>
+          </Col>
+          <Col
+            {...TwoColProps}
+            xl={{ span: 10 }}
+            md={{ span: 24 }}
+            sm={{ span: 24 }}
+          >
+            <Row align="middle" justify="space-between">
+              <div>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  className="margin-right"
+                >
+                  <FormattedMessage id="user.search" />
+                </Button>
+                <Button>
+                  <FormattedMessage id="user.reset" />
+                </Button>
+              </div>
+              <Button type="ghost">
+                <FormattedMessage id="user.create" />
+              </Button>
+            </Row>
+          </Col>
+        </Row>
+      </Form>
+
       <Table
         columns={columns}
         dataSource={user.list}
         loading={loading}
-        scroll={{ x: 1000 }}
+        scroll={{ x: 1300 }}
         rowKey={record => record.id}
-        pagination={pagination}
+        pagination={user.pagination}
         onChange={handleChange}
+        bordered
       />
     </div>
   );

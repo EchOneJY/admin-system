@@ -1,17 +1,19 @@
 import React from 'react';
+import { getLocale } from 'umi';
 import { ConfigProvider } from 'antd';
-const { i18n } = require('@/utils/config');
 import zh_CN from 'antd/lib/locale-provider/zh_CN';
 import en_US from 'antd/lib/locale-provider/en_US';
 
-const languages = {
-  zh: zh_CN,
-  en: en_US,
+const languageConfig: any = {
+  zh_CN,
+  en_US,
 };
-const { defaultLanguage } = i18n;
+
+const locale = getLocale();
+console.log(locale);
 
 const Layout: React.FC = ({ children }) => (
-  <ConfigProvider locale={zh_CN}>{children}</ConfigProvider>
+  <ConfigProvider locale={languageConfig[locale]}>{children}</ConfigProvider>
 );
 
 export default Layout;

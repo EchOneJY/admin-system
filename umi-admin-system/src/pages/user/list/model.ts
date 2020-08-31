@@ -1,10 +1,10 @@
 import { Effect, Reducer, Subscription } from 'umi';
 import { fakeUserList } from './service';
-import { UserType } from './data';
+import { UserType, PaginationType } from './data';
 
 export interface StateType {
   list: UserType[];
-  total: number;
+  pagination: PaginationType;
 }
 
 export interface ModelType {
@@ -16,22 +16,44 @@ export interface ModelType {
   reducers: {
     setUserList: Reducer<StateType>;
   };
-  // subscriptions: { setup: Subscription };
+  subscriptions: { setup: Subscription };
 }
 
 const Model: ModelType = {
   namespace: 'user',
   state: {
     list: [],
-    total: 0,
+    pagination: {
+      showSizeChanger: true,
+      showQuickJumper: true,
+      current: 1,
+      total: 0,
+      pageSize: 10,
+    },
+  },
+  subscriptions: {
+    setup({ dispatch, history }) {
+      history.listen(location => {
+        if (location.pathname === '/users/list') {
+          const payload = { current: 1, pageSize: 10 };
+          dispatch({
+            type: 'query',
+            payload,
+          });
+        }
+      });
+    },
   },
   reducers: {
     setUserList(state, { payload }) {
-      const { list, total } = payload;
+      const { list, pagination } = payload;
       return {
         ...state,
         list,
-        total,
+        pagination: {
+          ...state?.pagination,
+          ...pagination,
+        },
       };
     },
   },
@@ -42,7 +64,7 @@ const Model: ModelType = {
       const { data: list, total } = data;
       yield put({
         type: 'setUserList',
-        payload: { list, total },
+        payload: { list, pagination: { ...payload, total } },
       });
     },
   },
